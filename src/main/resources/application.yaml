@@ -1,0 +1,48 @@
+phlow:
+  api:
+    prefix: /api
+    itemsPerPage: 9
+    versions:
+      v1: /v1
+      v2: /v2
+    mappings:
+      authorization: /auth
+  documentation:
+    title: Phlow API
+    description: Документация API для проекта по курсу "Интернет технологии", кафедра ПОКС, ИГЭУ, 2020г.
+    version: 1.0.0.0
+    termsOfServiceUrl:
+    contact:
+      name: Svetlana Lazyuk
+      email: 16501@gapps.ispu.ru
+      url: http://ispu.ru/
+    license: Apache License, Version 2.0.
+    licenseUrl: https://www.apache.org/licenses/LICENSE-2.0
+  security:
+    passwordRegex: "((?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%!]).{8,40})"
+    emailRegex: "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$"
+    usernameRegex: "^[a-z0-9_-]{5,30}$"
+    defaultRole: USER
+  cors:
+    allowed-origins: "*"
+    allowed-methods: GET, PUT, POST, DELETE, OPTIONS, PATCH
+    allowed-headers: "*"
+    exposed-headers:
+    allow-credentials: true
+    max-age: 1800
+
+server:
+  port: 8081
+  bCryptRounds: 12
+spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/phlow
+    username: postgres
+    password: phlowdb
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
