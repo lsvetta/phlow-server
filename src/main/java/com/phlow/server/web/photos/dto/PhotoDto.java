@@ -11,6 +11,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PhotoDto implements Serializable {
+    private static final long serialVersionUID = -2919527573524188206L;
+
     private UUID id;
     private String imageLink;
 }
