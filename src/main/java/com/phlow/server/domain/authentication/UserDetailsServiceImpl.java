@@ -1,7 +1,7 @@
 package com.phlow.server.domain.authentication;
 
-import com.phlow.server.model.users.UserModel;
-import com.phlow.server.model.users.UserRepository;
+import com.phlow.server.domain.model.users.UserModel;
+import com.phlow.server.domain.model.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -7,6 +7,12 @@ phlow:
       v2: /v2
     mappings:
       authorization: /auth
+      users: /users
+      presets: /presets
+      photos: /photos
+      followings: /followings
+      comments: /comments
+      posts: /posts
   documentation:
     title: Phlow API
     description: Документация API для проекта по курсу "Интернет технологии", кафедра ПОКС, ИГЭУ, 2020г.
@@ -43,6 +49,6 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/phlow
     username: postgres
-    password: phlowdb
+    password: Timetracker123
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml

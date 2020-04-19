@@ -1,7 +1,7 @@
 package com.phlow.server.service.users.roles;
 
-import com.phlow.server.model.roles.RoleModel;
-import com.phlow.server.model.roles.RoleRepository;
+import com.phlow.server.domain.model.roles.RoleModel;
+import com.phlow.server.domain.model.roles.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

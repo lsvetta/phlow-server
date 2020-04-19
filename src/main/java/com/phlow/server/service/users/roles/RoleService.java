@@ -1,6 +1,6 @@
 package com.phlow.server.service.users.roles;
 
-import com.phlow.server.model.roles.RoleModel;
+import com.phlow.server.domain.model.roles.RoleModel;
 
 import java.util.List;
 import java.util.UUID;

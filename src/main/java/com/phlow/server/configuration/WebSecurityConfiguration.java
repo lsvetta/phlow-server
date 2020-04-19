@@ -47,9 +47,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth)
             throws Exception {
         auth.authenticationProvider(authenticationProvider());
-//        .inMemoryAuthentication().withUser("admin")
-//        .password(bCryptPasswordEncoder().encode("admin"))
-//        .roles("ADMIN");
     }
 
     @Bean

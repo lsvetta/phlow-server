@@ -1,6 +1,6 @@
 package com.phlow.server.service.users;
 
-import com.phlow.server.model.users.UserModel;
+import com.phlow.server.domain.model.users.UserModel;
 
 import java.util.List;
 import java.util.UUID;

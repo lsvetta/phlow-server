@@ -2,10 +2,10 @@ package com.phlow.server.service.users;
 
 import com.phlow.server.domain.common.EntityNotFoundException;
 import com.phlow.server.domain.common.InvalidArgumentException;
-import com.phlow.server.model.roles.RoleModel;
-import com.phlow.server.model.users.UserModel;
-import com.phlow.server.model.users.UserModelMapper;
-import com.phlow.server.model.users.UserRepository;
+import com.phlow.server.domain.model.roles.RoleModel;
+import com.phlow.server.domain.model.users.UserModel;
+import com.phlow.server.domain.model.users.UserModelMapper;
+import com.phlow.server.domain.model.users.UserRepository;
 import com.phlow.server.service.users.roles.RoleService;
 import com.phlow.server.service.users.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
