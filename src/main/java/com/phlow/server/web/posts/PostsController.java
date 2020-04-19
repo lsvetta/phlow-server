@@ -1,12 +1,9 @@
 package com.phlow.server.web.posts;
 
 import com.phlow.server.domain.model.posts.PostsModelMapper;
-import com.phlow.server.domain.model.presets.PresetsModelMapper;
 import com.phlow.server.domain.model.users.UserModel;
 import com.phlow.server.service.posts.PostsService;
-import com.phlow.server.service.presets.PresetsService;
 import com.phlow.server.web.posts.dto.PostDto;
-import com.phlow.server.web.presets.dto.PresetDto;
 import io.swagger.annotations.Api;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
