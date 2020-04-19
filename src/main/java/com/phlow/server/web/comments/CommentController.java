@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class CommentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<CommentDto> createComment(@RequestBody final CommentDto commentDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.commentsModelMapper.modelToDto(this.commentsService.createComment(
                 this.commentsModelMapper.dtoToModel(commentDto))));
@@ -46,6 +48,7 @@ public class CommentController {
 
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity deleteComment(@PathVariable final String commentId) {
         this.commentsService.deleteComment(commentId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "Photos")
@@ -39,6 +40,7 @@ public class PhotoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<PhotoDto> createPhoto(@RequestBody PhotoDto photoDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(this.photosModelMapper.modelToDto(
@@ -47,6 +49,7 @@ public class PhotoController {
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<PhotoDto> updatePhoto(
             @RequestBody PhotoDto photoDto) {
         return ResponseEntity.ok(this.photosModelMapper.modelToDto(
@@ -55,6 +58,7 @@ public class PhotoController {
 
     @DeleteMapping("/{photoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity deletePhoto(
             @PathVariable final String photoId) {
         this.photosService.deletePhotoModel(photoId);
