@@ -8,6 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface PhotoRepository  extends CrudRepository<PhotoModel, UUID> {
-    PhotoModel findFirstById(String id);
-    void deleteAllById(String id);
+    PhotoModel findFirstById(UUID id);
+    PhotoModel findFirstByImageLink(String imageLink);
+    void deleteAllById(UUID id);
 }

@@ -6,6 +6,8 @@ import com.phlow.server.domain.model.posts.PostsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @Slf4j
 public class PhotosServiceImpl implements PhotosService {
@@ -31,11 +33,11 @@ public class PhotosServiceImpl implements PhotosService {
 
     @Override
     public PhotoModel getPhotoByPostId(String postId) {
-        return this.postsRepository.findFirstById(postId).getPhoto();
+        return this.postsRepository.findFirstById(UUID.fromString(postId)).getPhoto();
     }
 
     @Override
     public void deletePhotoModel(String photoId) {
-        this.photoRepository.deleteAllById(photoId);
+        this.photoRepository.deleteAllById(UUID.fromString(photoId));
     }
 }

@@ -1,6 +1,8 @@
 package com.phlow.server.web.posts.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.phlow.server.web.View;
 import com.phlow.server.web.comments.dto.CommentDto;
 import com.phlow.server.web.photos.dto.PhotoDto;
 import com.phlow.server.web.presets.dto.PresetDto;
@@ -17,6 +19,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonView(View.PUBLIC.class)
 public class PostDto implements Serializable {
     private static final long serialVersionUID = -4739258564706008575L;
 

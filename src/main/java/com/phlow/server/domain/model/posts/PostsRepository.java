@@ -8,8 +8,8 @@ import java.util.UUID;
 
 @Repository
 public interface PostsRepository  extends CrudRepository<PostModel, UUID> {
-    void deleteById(String id);
-    PostModel findFirstById(String id);
-    List<PostModel> findAllByAuthorIdOrderByDateDesc(String userId);
-    List<PostModel> findAllByAuthorIdIn(List<String> ids);
+    void deleteById(UUID id);
+    PostModel findFirstById(UUID id);
+    List<PostModel> findAllByAuthorIdOrderByDateDesc(UUID userId);
+    List<PostModel> findAllByAuthorIdIn(List<UUID> ids);
 }

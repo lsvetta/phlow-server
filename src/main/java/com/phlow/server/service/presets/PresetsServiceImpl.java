@@ -40,6 +40,6 @@ public class PresetsServiceImpl implements PresetsService {
 
     @Override
     public PresetModel getPresetByPostId(final String postId) {
-        return this.postsRepository.findFirstById(postId).getPreset();
+        return this.postsRepository.findFirstById(UUID.fromString(postId)).getPreset();
     }
 }

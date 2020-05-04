@@ -10,6 +10,8 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +39,7 @@ public class PostModel implements Serializable {
 
     @Basic
     @Column(name = "content")
+    @NotEmpty(message = "Тело поста не может быть пустым")
     private String content;
 
     @OneToMany(mappedBy = "post",
@@ -73,6 +76,7 @@ public class PostModel implements Serializable {
     @JsonIgnoreProperties(value = {"posts"})
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @NotNull(message = "Пост должен содержать фото")
     private PhotoModel photo;
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = UserModel.class,

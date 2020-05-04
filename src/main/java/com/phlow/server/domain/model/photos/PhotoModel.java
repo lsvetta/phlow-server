@@ -6,6 +6,8 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +30,7 @@ public class PhotoModel implements Serializable {
 
     @Basic
     @Column(name = "image_link")
+    @NotBlank(message = "Ссылка на фото не может быть пустой")
     private String imageLink;
 
     @OneToMany(mappedBy = "photo",

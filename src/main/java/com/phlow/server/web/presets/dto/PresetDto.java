@@ -1,5 +1,7 @@
 package com.phlow.server.web.presets.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.phlow.server.web.View;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonView(View.PUBLIC.class)
 public class PresetDto implements Serializable {
 
     private static final long serialVersionUID = 3743951077773719360L;

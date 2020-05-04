@@ -58,7 +58,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     @JsonView(View.PUBLIC.class)
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok().body(this.userModelMapper.modelsToDtos(this.userService.getAllUsers()));
     }
@@ -67,6 +67,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/me")
     @JsonView(View.PUBLIC.class)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<UserDto> getInformationAboutCurrentUser(@AuthenticationPrincipal
                                                                   @ApiIgnore UserModel userModel) {
         return ResponseEntity.ok().body(this.userModelMapper.modelToDto(userModel));
@@ -85,7 +86,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<UserDto> getUser(@PathVariable(value = "id") UUID id,
                                            @AuthenticationPrincipal @ApiIgnore UserModel userModel) {
         if (userModel.getRoles().stream().noneMatch(x -> x.getName().equals("ADMIN"))) {
@@ -108,6 +109,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/update/{id}")
     @JsonView(View.PUBLIC.class)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserDto> updateUser(@PathVariable(value = "id") UUID id, @RequestBody UserDto userDto,
                                               @AuthenticationPrincipal @ApiIgnore UserModel userModel) {
         if (userModel.getRoles().stream().noneMatch(x -> x.getName().equals("ADMIN"))) {

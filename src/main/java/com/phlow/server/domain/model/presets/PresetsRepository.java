@@ -7,5 +7,6 @@ import java.util.UUID;
 
 @Repository
 public interface PresetsRepository extends CrudRepository<PresetModel, UUID> {
-    void deletePresetModelById(String id);
+    void deletePresetModelById(UUID id);
+    PresetModel findFirstById(UUID id);
 }
