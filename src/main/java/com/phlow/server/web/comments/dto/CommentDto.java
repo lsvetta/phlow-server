@@ -1,5 +1,6 @@
 package com.phlow.server.web.comments.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.phlow.server.web.View;
 import com.phlow.server.web.posts.dto.PostDto;
@@ -22,7 +23,6 @@ public class CommentDto implements Serializable {
     private UUID id;
 
     private UserDto author;
-    private PostDto post;
     private String content;
     private Date dateCommented;
 }

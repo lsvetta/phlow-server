@@ -1,10 +1,8 @@
 package com.phlow.server.service.followings;
 
-import com.phlow.server.domain.model.presets.PresetModel;
 import com.phlow.server.domain.model.users.UserModel;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface FollowingsService {
 

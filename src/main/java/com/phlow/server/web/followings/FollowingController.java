@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -48,18 +49,18 @@ public class FollowingController {
 
     @PostMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity follow(@PathVariable final String userId,
-                                                @AuthenticationPrincipal UserModel follower) {
+                                 @ApiIgnore @AuthenticationPrincipal UserModel follower) {
         this.followingsService.follow(userId, follower.getId().toString());
         return ResponseEntity.status(HttpStatus.CREATED).body("");
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity unfollow(@PathVariable final String userId,
-                                                @AuthenticationPrincipal UserModel follower) {
+                                   @ApiIgnore @AuthenticationPrincipal UserModel follower) {
         this.followingsService.unfollow(userId, follower.getId().toString());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
     }

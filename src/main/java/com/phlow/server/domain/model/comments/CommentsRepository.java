@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Repository
 public interface CommentsRepository extends CrudRepository<CommentModel, UUID> {
-    void deleteById(String id);
-    List<CommentModel> findAllByPostId(String id);
+    void deleteById(UUID id);
+    List<CommentModel> findAllByPostIdOrderByDateCommentedDesc(UUID id);
+    List<CommentModel> findAllByAuthorId(UUID id);
 }

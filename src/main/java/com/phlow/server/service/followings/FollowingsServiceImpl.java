@@ -41,15 +41,22 @@ public class FollowingsServiceImpl implements FollowingsService {
 
     @Override
     public void follow(String followingUserId, String followerUserId) {
-        FollowingModel followingModel = new FollowingModel(null,
-                this.userRepository.findUserModelById(UUID.fromString(followingUserId)),
-                this.userRepository.findUserModelById(UUID.fromString(followerUserId)));
-        this.followingsRepostiory.save(followingModel);
+        FollowingModel followingModel = this.followingsRepostiory
+                .findFirstByFollowerIdAndFollowingId(UUID.fromString(followerUserId), UUID.fromString(followingUserId));
+        if(followingModel == null) {
+            followingModel = new FollowingModel(null,
+                    this.userRepository.findUserModelById(UUID.fromString(followingUserId)),
+                    this.userRepository.findUserModelById(UUID.fromString(followerUserId)));
+            this.followingsRepostiory.save(followingModel);
+        }
     }
 
     @Override
     public void unfollow(String followingUserId, String followerUserId) {
-        FollowingModel followingModel = this.followingsRepostiory.findFirstByFollowerIdAndFollowingId(followerUserId, followingUserId);
-        this.followingsRepostiory.delete(followingModel);
+        FollowingModel followingModel = this.followingsRepostiory.findFirstByFollowerIdAndFollowingId(
+                UUID.fromString(followerUserId), UUID.fromString(followingUserId));
+        if(followingModel != null) {
+            this.followingsRepostiory.delete(followingModel);
+        }
     }
 }

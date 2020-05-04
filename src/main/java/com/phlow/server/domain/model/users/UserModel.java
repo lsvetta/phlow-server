@@ -87,7 +87,7 @@ public class UserModel implements UserDetails, Serializable {
     @JsonIgnoreProperties(value = {"following"})
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<FollowingModel> followings;
+    private List<FollowingModel> followers;
 
     @OneToMany(mappedBy = "follower",
             cascade = {
@@ -99,7 +99,7 @@ public class UserModel implements UserDetails, Serializable {
     @JsonIgnoreProperties(value = {"follower"})
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<FollowingModel> followers;
+    private List<FollowingModel> followings;
 
     @Override
     public boolean equals(Object o) {

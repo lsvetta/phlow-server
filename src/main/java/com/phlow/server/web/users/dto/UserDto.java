@@ -15,6 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserDto {
 
+        @JsonView(View.PUBLIC.class)
         private UUID id;
 
         @JsonView(View.PUBLIC.class)
