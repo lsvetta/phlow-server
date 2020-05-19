@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,13 +31,13 @@ public class FollowingsServiceImpl implements FollowingsService {
     @Override
     public List<UserModel> getFollowers(String userId) {
         return this.userRepository.findUserModelById(UUID.fromString(userId))
-                .getFollowers().stream().map(FollowingModel::getFollower).collect(Collectors.toList());
+                .getFollowers().stream().map(FollowingModel::getFollower).distinct().collect(Collectors.toList());
     }
 
     @Override
     public List<UserModel> getFollowings(String userId) {
-        return this.userRepository.findUserModelById(UUID.fromString(userId))
-                .getFollowers().stream().map(FollowingModel::getFollowing).collect(Collectors.toList());
+        return this.userRepository.findUserModelById(UUID.fromString(userId)).getFollowings().stream()
+                .map(FollowingModel::getFollowing).distinct().collect(Collectors.toList());
     }
 
     @Override
@@ -52,6 +53,7 @@ public class FollowingsServiceImpl implements FollowingsService {
     }
 
     @Override
+    @Transactional
     public void unfollow(String followingUserId, String followerUserId) {
         FollowingModel followingModel = this.followingsRepostiory.findFirstByFollowerIdAndFollowingId(
                 UUID.fromString(followerUserId), UUID.fromString(followingUserId));

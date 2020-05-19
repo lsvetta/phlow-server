@@ -24,6 +24,11 @@ dependencies {
 	compile('org.springframework.security:spring-security-web')
 	compile('org.springframework.security:spring-security-config')
 	compile("org.springframework.boot:spring-boot-starter-security")
+
+	// яндекс облако использует библиотеку Amazon Web Services
+	implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.785')
+	implementation 'com.amazonaws:aws-java-sdk-s3'
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.liquibase:liquibase-core'

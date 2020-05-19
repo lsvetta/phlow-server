@@ -1,21 +1,26 @@
 package com.phlow.server.web.photos;
 
+import com.phlow.server.domain.common.UploadFailureException;
 import com.phlow.server.domain.model.photos.PhotosModelMapper;
-import com.phlow.server.domain.model.presets.PresetsModelMapper;
+import com.phlow.server.domain.model.users.UserModel;
+import com.phlow.server.service.files.FileService;
 import com.phlow.server.service.photos.PhotosService;
-import com.phlow.server.service.presets.PresetsService;
 import com.phlow.server.web.photos.dto.PhotoDto;
-import com.phlow.server.web.presets.dto.PresetDto;
 import io.swagger.annotations.Api;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
-@ApiIgnore
+import java.io.IOException;
+import java.util.UUID;
+
 @Api(tags = "Photos")
 @RestController
 @RequestMapping(
@@ -29,7 +34,7 @@ public class PhotoController {
 
     @Autowired
     public PhotoController(PhotosService photosService,
-                            PhotosModelMapper photosModelMapper) {
+                           PhotosModelMapper photosModelMapper) {
         this.photosService = photosService;
         this.photosModelMapper = photosModelMapper;
     }
@@ -42,28 +47,38 @@ public class PhotoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<PhotoDto> createPhoto(@RequestBody PhotoDto photoDto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(this.photosModelMapper.modelToDto(
-                        this.photosService.createPhoto(this.photosModelMapper.dtoToModel(photoDto))));
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ResponseEntity<PhotoDto> createPhoto(@RequestPart(value = "photo") @NonNull final MultipartFile photo,
+                                               @ApiIgnore @AuthenticationPrincipal UserModel userModel) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(this.photosModelMapper.modelToDto(this.photosService.createPhoto(photo, userModel.getId().toString())));
+        } catch (IOException e) {
+            throw new UploadFailureException(e.getMessage());
+        }
     }
 
-    @PatchMapping
+    @PatchMapping("/{photoId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<PhotoDto> updatePhoto(
-            @RequestBody PhotoDto photoDto) {
-        return ResponseEntity.ok(this.photosModelMapper.modelToDto(
-                this.photosService.updatePhoto(this.photosModelMapper.dtoToModel(photoDto))));
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ResponseEntity<PhotoDto> updatePhoto(@RequestPart(value = "photo") @NonNull final MultipartFile photo,
+                                                @PathVariable @NonNull final String photoId,
+                                                @ApiIgnore @AuthenticationPrincipal UserModel userModel) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(this.photosModelMapper.modelToDto(this.photosService.updatePhoto(photo, userModel.getId().toString(), photoId)));
+        } catch (IOException e) {
+            throw new UploadFailureException(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{photoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity deletePhoto(
-            @PathVariable final String photoId) {
-        this.photosService.deletePhotoModel(photoId);
+    public ResponseEntity<Object> deletePhoto(
+            @PathVariable final String photoId,
+            @ApiIgnore @AuthenticationPrincipal UserModel userModel) {
+        this.photosService.deletePhotoModel(photoId, userModel.getId().toString());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
     }
 }

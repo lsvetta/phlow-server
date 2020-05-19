@@ -25,7 +25,6 @@ public class PhotoModel implements Serializable {
     @Id
     @Column(name = "id")
     @Type(type = "pg-uuid")
-    @GeneratedValue
     private UUID id;
 
     @Basic

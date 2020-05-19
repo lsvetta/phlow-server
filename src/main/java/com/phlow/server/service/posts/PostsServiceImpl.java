@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -64,6 +65,7 @@ public class PostsServiceImpl implements PostsService {
     }
 
     @Override
+    @Transactional
     public void deletePost(String postId) {
         this.postsRepository.deleteById(UUID.fromString(postId));
     }
