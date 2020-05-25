@@ -124,6 +124,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserModel getUserByIdOrUsername(String idOrUsername) {
+        try{
+            return this.userRepository.findByUsernameOrId(idOrUsername, UUID.fromString(idOrUsername));
+        } catch (IllegalArgumentException exception){
+            return this.userRepository.findByUsername(idOrUsername);
+        }
+    }
+
+    @Override
     public boolean validate(UserModel userModel, boolean onCreate) {
         if(userModel.getName().isEmpty()){
             throw new InvalidArgumentException("Имя не может быть пустым");

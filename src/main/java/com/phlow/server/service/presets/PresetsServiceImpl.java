@@ -31,7 +31,9 @@ public class PresetsServiceImpl implements PresetsService {
 
     @Override
     public PresetModel updatePreset(final PresetModel presetModel) {
-        return this.presetsRepository.save(presetModel);
+        PresetModel preset = this.presetsRepository.findFirstById(presetModel.getId());
+        preset.setSettings(presetModel.getSettings());
+        return this.presetsRepository.save(preset);
     }
 
     @Override

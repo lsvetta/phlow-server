@@ -22,4 +22,6 @@ public interface UserRepository extends CrudRepository<UserModel, UUID>,
     UserModel findByUsername(String username);
 
     UserModel findByUsernameOrEmail(String username, String email);
+
+    UserModel findByUsernameOrId(String username, UUID id);
 }

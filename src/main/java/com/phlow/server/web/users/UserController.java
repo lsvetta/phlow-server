@@ -34,14 +34,12 @@ public class UserController {
 
     private final UserService userService;
     private final UserModelMapper userModelMapper;
-    private final UserDetailsServiceImpl userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserService userService, UserModelMapper userModelMapper, UserDetailsServiceImpl userDetailsService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, UserModelMapper userModelMapper, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.userModelMapper = userModelMapper;
-        this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -85,19 +83,14 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{id}")
+    @GetMapping("/{idOrUsername}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<UserDto> getUser(@PathVariable(value = "id") UUID id,
-                                           @AuthenticationPrincipal @ApiIgnore UserModel userModel) {
-        if (userModel.getRoles().stream().noneMatch(x -> x.getName().equals("ADMIN"))) {
-            if (!userModel.getId().equals(id)) {
-                throw new ActionForbiddenException("Недостаточно прав");
-            }
-        }
-        if (!this.userService.isUserExists(id)) {
+    public ResponseEntity<UserDto> getUserbyIdOrUsername(@PathVariable(value = "idOrUsername") String idOrUsername) {
+        final UserDto userDto = this.userModelMapper.modelToDto(userService.getUserByIdOrUsername(idOrUsername));
+        if(userDto == null) {
             throw new EntityNotFoundException("Пользователь не найден");
         }
-        return ResponseEntity.ok(this.userModelMapper.modelToDto(userService.getUser(id)));
+        return ResponseEntity.ok(userDto);
     }
 
     @ResponseStatus(HttpStatus.OK)

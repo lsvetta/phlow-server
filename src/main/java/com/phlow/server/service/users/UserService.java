@@ -12,6 +12,7 @@ public interface UserService {
     UserModel createUser(UserModel userModel);
     UserModel updateUser(UserModel userModel);
     UserModel getUser(UUID id);
+    UserModel getUserByIdOrUsername(String idOrUsername);
     boolean validate(UserModel userModel, boolean onCreate);
     void deleteById(UUID id);
     boolean isUserExists(UUID id);
