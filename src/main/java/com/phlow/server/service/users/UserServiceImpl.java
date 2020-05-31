@@ -2,10 +2,14 @@ package com.phlow.server.service.users;
 
 import com.phlow.server.domain.common.EntityNotFoundException;
 import com.phlow.server.domain.common.InvalidArgumentException;
+import com.phlow.server.domain.model.photos.PhotoModel;
+import com.phlow.server.domain.model.photos.PhotoRepository;
+import com.phlow.server.domain.model.presets.UserPresetModel;
 import com.phlow.server.domain.model.roles.RoleModel;
 import com.phlow.server.domain.model.users.UserModel;
 import com.phlow.server.domain.model.users.UserModelMapper;
 import com.phlow.server.domain.model.users.UserRepository;
+import com.phlow.server.service.photos.PhotosService;
 import com.phlow.server.service.users.roles.RoleService;
 import com.phlow.server.service.users.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +20,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -30,6 +36,8 @@ public class UserServiceImpl implements UserService {
     private String defaultRole;
 
     private final UserRepository userRepository;
+    private final PhotosService photosService;
+    private final PhotoRepository photoRepository;
 
     private final UserModelMapper userModelMapper;
 
@@ -40,11 +48,19 @@ public class UserServiceImpl implements UserService {
     private final Validator validator;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserModelMapper userModelMapper, RoleService roleService, PasswordEncoder passwordEncoder, Validator validator) {
+    public UserServiceImpl(UserRepository userRepository,
+                           PhotoRepository photoRepository,
+                           UserModelMapper userModelMapper,
+                           RoleService roleService,
+                           PasswordEncoder passwordEncoder,
+                           PhotosService photosService,
+                           Validator validator) {
         this.userRepository = userRepository;
+        this.photoRepository = photoRepository;
         this.userModelMapper = userModelMapper;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
+        this.photosService = photosService;
         this.validator = validator;
     }
 
@@ -71,6 +87,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserModel setAvatar(MultipartFile photo, UUID userId) throws IOException {
+        UserModel user = this.userRepository.findUserModelById(userId);
+        if (user.getPhoto() == null) {
+            PhotoModel photoModel = this.photosService.createPhoto(photo, userId.toString());
+            user.setPhoto(photoModel);
+            return this.userRepository.save(user);
+        } else {
+            this.photosService.updatePhoto(photo, userId.toString(), user.getPhoto().getId().toString());
+            return this.userRepository.findUserModelById(user.getId());
+        }
+    }
+
+    @Override
     @Transactional
     public UserModel createUser(UserModel user) {
         this.validate(user, true);
@@ -79,7 +108,6 @@ public class UserServiceImpl implements UserService {
         if(role == null) {
             throw new EntityNotFoundException("Отсутствует роль по умолчанию: " + this.defaultRole);
         }
-//        user.setId(UUID.randomUUID());
         user.setRoles(Collections.singletonList(role));
         user = this.userRepository.save(user);
         return user;
@@ -102,20 +130,19 @@ public class UserServiceImpl implements UserService {
         if (!userModel.getUsername().equals(user.getUsername())) {
             UserModel res = this.userRepository.findByUsername(userModel.getUsername());
             if (res != null && userModel.getId() != res.getId()) {
-                throw new InvalidArgumentException("Пользователь с таким username уже сущесвтует");
+                throw new InvalidArgumentException("Пользователь с таким username уже существует");
             }
         }
         if (!userModel.getEmail().equals(user.getName())) {
             UserModel res = this.userRepository.findByUsernameOrEmail(userModel.getEmail(), userModel.getEmail());
             if (res != null && userModel.getId() != res.getId()) {
-                throw new InvalidArgumentException("Пользователь с таким email уже сущесвтует");
+                throw new InvalidArgumentException("Пользователь с таким email уже существует");
             }
         }
         user.setEmail(userModel.getEmail());
         user.setName(userModel.getName());
         user.setUsername((userModel.getUsername()));
-
-        return userRepository.save(user);
+        return user;
     }
 
     @Override

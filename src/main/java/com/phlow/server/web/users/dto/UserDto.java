@@ -2,6 +2,7 @@ package com.phlow.server.web.users.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.phlow.server.web.View;
+import com.phlow.server.web.photos.dto.PhotoDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,9 @@ public class UserDto {
         private String name;
 
         @JsonView(View.PUBLIC.class)
+        private String description;
+
+        @JsonView(View.PUBLIC.class)
         private String email;
 
         @JsonView(View.PUBLIC.class)
@@ -38,4 +42,7 @@ public class UserDto {
 
         @JsonView(View.PUBLIC.class)
         private List<RoleDto> roles;
+
+        @JsonView(View.PUBLIC.class)
+        private PhotoDto photo;
 }

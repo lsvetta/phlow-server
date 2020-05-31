@@ -11,6 +11,7 @@ import com.phlow.server.web.View;
 import com.phlow.server.web.posts.dto.PostDto;
 import io.swagger.annotations.Api;
 import lombok.NonNull;
+import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,6 +52,21 @@ public class PostsController {
         return ResponseEntity.ok(this.postsModelMapper.modelsToDtos(this.postsService.getPostsByAuthorId(userId)));
     }
 
+    @GetMapping("/byid/{postId}")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView(View.PUBLIC.class)
+    public ResponseEntity<PostDto> getPostsById(@PathVariable final String postId) {
+        return ResponseEntity.ok(this.postsModelMapper.modelToDto(this.postsService.getPostModelById(postId)));
+    }
+
+    @GetMapping("/my")
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView(View.PUBLIC.class)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ResponseEntity<List<PostDto>> getPostsByCurrentUser(@ApiIgnore @AuthenticationPrincipal final UserModel currentUser){
+        return ResponseEntity.ok(this.postsModelMapper.modelsToDtos(this.postsService.getPostsByAuthorId(currentUser.getId().toString())));
+    }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -66,9 +82,8 @@ public class PostsController {
     public ResponseEntity<PostDto> createPost(@RequestBody @NonNull final PostDto postDto,
                                               @ApiIgnore @AuthenticationPrincipal final UserModel currentUser) {
         postDto.setAuthor(this.userModelMapper.modelToDto(currentUser));
-        PostModel huy = this.postsModelMapper.dtoToModel(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(this.postsModelMapper.modelToDto(
-                this.postsService.createPostModel(huy)));
+                this.postsService.createPostModel(this.postsModelMapper.dtoToModel(postDto))));
     }
 
     @PatchMapping
@@ -90,11 +105,7 @@ public class PostsController {
     @JsonView(View.PUBLIC.class)
     public ResponseEntity deletePost(@PathVariable final String postId,
                                      @ApiIgnore @AuthenticationPrincipal final UserModel currentUser) {
-        if (currentUser.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN")) ||
-                this.postsService.getPostsByAuthorId(currentUser.getId().toString())
-                .stream().anyMatch(postModel -> postModel.getId().equals(UUID.fromString(postId)))) {
             this.postsService.deletePost(postId);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
-        } else throw new ActionForbiddenException("Пост принадлежит не вам");
     }
 }

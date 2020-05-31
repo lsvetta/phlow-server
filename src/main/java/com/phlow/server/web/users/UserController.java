@@ -5,12 +5,15 @@ import com.phlow.server.domain.authentication.UserDetailsServiceImpl;
 import com.phlow.server.domain.common.ActionForbiddenException;
 import com.phlow.server.domain.common.EntityNotFoundException;
 import com.phlow.server.domain.common.InvalidArgumentException;
+import com.phlow.server.domain.common.UploadFailureException;
 import com.phlow.server.domain.model.users.UserModel;
 import com.phlow.server.domain.model.users.UserModelMapper;
 import com.phlow.server.service.users.UserService;
 import com.phlow.server.web.View;
+import com.phlow.server.web.photos.dto.PhotoDto;
 import com.phlow.server.web.users.dto.UserDto;
 import io.swagger.annotations.Api;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,8 +22,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,6 +58,19 @@ public class UserController {
         );
     }
 
+    @PutMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ResponseEntity<UserDto> setAvatar(@RequestPart(value = "photo") @NonNull final MultipartFile photo,
+                                                @ApiIgnore @AuthenticationPrincipal UserModel userModel) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(this.userModelMapper.modelToDto(this.userService.setAvatar(photo, userModel.getId())));
+        } catch (IOException e) {
+            throw new UploadFailureException(e.getMessage());
+        }
+    }
+
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     @JsonView(View.PUBLIC.class)
@@ -68,7 +86,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<UserDto> getInformationAboutCurrentUser(@AuthenticationPrincipal
                                                                   @ApiIgnore UserModel userModel) {
-        return ResponseEntity.ok().body(this.userModelMapper.modelToDto(userModel));
+        return ResponseEntity.ok().body(this.userModelMapper.modelToDto(this.userService.getUser(userModel.getId())));
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -102,7 +120,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/update/{id}")
     @JsonView(View.PUBLIC.class)
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<UserDto> updateUser(@PathVariable(value = "id") UUID id, @RequestBody UserDto userDto,
                                               @AuthenticationPrincipal @ApiIgnore UserModel userModel) {
         if (userModel.getRoles().stream().noneMatch(x -> x.getName().equals("ADMIN"))) {

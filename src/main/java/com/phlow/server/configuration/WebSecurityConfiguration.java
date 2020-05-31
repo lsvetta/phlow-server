@@ -88,7 +88,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .successHandler(
                         (request, response, authentication) -> {
                             response.setStatus(HttpServletResponse.SC_OK);
-                            if(request.getHeader("Accept").contains("text/html")) {
+                            if(request.getHeader("Accept") != null && request.getHeader("Accept").contains("text/html")) {
                                 response.sendRedirect("/swagger-ui.html");
                             }
                         })

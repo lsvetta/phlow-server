@@ -11,5 +11,5 @@ public interface PostsRepository  extends CrudRepository<PostModel, UUID> {
     void deleteById(UUID id);
     PostModel findFirstById(UUID id);
     List<PostModel> findAllByAuthorIdOrderByDateDesc(UUID userId);
-    List<PostModel> findAllByAuthorIdIn(List<UUID> ids);
+    List<PostModel> findAllByAuthorIdInOrderByDateDesc(List<UUID> ids);
 }

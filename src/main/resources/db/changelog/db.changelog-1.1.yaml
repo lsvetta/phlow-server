@@ -1,0 +1,56 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1587069769177-18
+      author: svett (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: users_presets_pkey
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: user_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: preset_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: TEXT
+            tableName: users_presets
+  - changeSet:
+      id: 1587069769177-19
+      author: svett (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: preset_id
+            baseTableName: users_presets
+            constraintName: fk_users_presets_presets
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: presets
+            validate: true
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: users_presets
+            constraintName: fk_users_presets_users
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
+            validate: true

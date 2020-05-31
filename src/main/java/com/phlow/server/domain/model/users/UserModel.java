@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.phlow.server.domain.model.followings.FollowingModel;
+import com.phlow.server.domain.model.photos.PhotoModel;
+import com.phlow.server.domain.model.presets.UserPresetModel;
 import com.phlow.server.domain.model.roles.RoleModel;
 import com.phlow.server.web.View;
 import lombok.*;
@@ -43,6 +45,11 @@ public class UserModel implements UserDetails, Serializable {
     private String name;
 
     @Basic
+    @Column(name = "description")
+    @JsonView(View.PUBLIC.class)
+    private String description;
+
+    @Basic
     @Column(name = "email")
     @JsonView(View.PUBLIC.class)
     @NonNull
@@ -57,6 +64,17 @@ public class UserModel implements UserDetails, Serializable {
     @Basic
     @Column(name = "password")
     private String password;
+
+    @ManyToOne(fetch = FetchType.EAGER, targetEntity = PhotoModel.class,
+            cascade = {
+                    CascadeType.MERGE,
+                    CascadeType.REFRESH,
+                    CascadeType.PERSIST
+            })
+    @JoinColumn(name = "photo_id", referencedColumnName = "id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private PhotoModel photo;
 
     @ManyToMany(cascade =
             {
@@ -101,6 +119,18 @@ public class UserModel implements UserDetails, Serializable {
     @EqualsAndHashCode.Exclude
     private List<FollowingModel> followings;
 
+    @OneToMany(mappedBy = "user",
+            cascade = {
+                    CascadeType.MERGE,
+                    CascadeType.REFRESH,
+                    CascadeType.PERSIST
+            },
+            targetEntity = UserPresetModel.class)
+    @JsonIgnoreProperties(value = {"user"})
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<UserPresetModel> presets;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -108,6 +138,7 @@ public class UserModel implements UserDetails, Serializable {
         UserModel that = (UserModel) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name) &&
+                Objects.equals(description, that.description) &&
                 Objects.equals(email, that.email) &&
                 Objects.equals(username, that.username) &&
                 Objects.equals(password, that.password);
@@ -116,7 +147,7 @@ public class UserModel implements UserDetails, Serializable {
     @Override
     @JsonIgnore
     public int hashCode() {
-        return Objects.hash(id, name, email, username, password);
+        return Objects.hash(id, name, description, email, username, password);
     }
 
     @Override

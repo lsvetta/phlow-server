@@ -1,6 +1,5 @@
 package com.phlow.server.service.posts;
 
-import com.phlow.server.domain.model.followings.FollowingModel;
 import com.phlow.server.domain.model.photos.PhotoModel;
 import com.phlow.server.domain.model.photos.PhotoRepository;
 import com.phlow.server.domain.model.posts.PostModel;
@@ -12,7 +11,6 @@ import com.phlow.server.domain.model.users.UserRepository;
 import com.phlow.server.service.followings.FollowingsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -53,6 +51,8 @@ public class PostsServiceImpl implements PostsService {
         if(postModel.getPreset().getId() != null) {
             presetModel = this.presetsRepository.findFirstById(postModel.getPreset().getId());
             postModel.setPreset(presetModel);
+        } else {
+            postModel.setPreset(null);
         }
         return this.postsRepository.save(postModel);
     }
@@ -62,6 +62,11 @@ public class PostsServiceImpl implements PostsService {
         PostModel postModel = this.postsRepository.findFirstById(post.getId());
         postModel.setContent(post.getContent());
         return this.postsRepository.save(postModel);
+    }
+
+    @Override
+    public PostModel getPostModelById(String postId) {
+        return this.postsRepository.findFirstById(UUID.fromString(postId));
     }
 
     @Override
@@ -81,6 +86,6 @@ public class PostsServiceImpl implements PostsService {
                 .map(UserModel::getId)
                 .collect(Collectors.toList());
 
-        return this.postsRepository.findAllByAuthorIdIn(followingsIds);
+        return this.postsRepository.findAllByAuthorIdInOrderByDateDesc(followingsIds);
     }
 }

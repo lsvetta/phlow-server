@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1587069769177-20
+      author: svett (generated)
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: photo_id
+                  type: uuid
+        - addForeignKeyConstraint:
+            baseColumnNames: photo_id
+            baseTableName: users
+            constraintName: fk_users_photos
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: photos
+            validate: false
