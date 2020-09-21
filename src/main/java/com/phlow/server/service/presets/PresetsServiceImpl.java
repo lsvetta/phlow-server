@@ -67,17 +67,17 @@ public class PresetsServiceImpl implements PresetsService {
     }
 
     @Override
-    public PresetModel updatePresetName(UserPresetModel newPreset) {
-        UserPresetModel preset = this.usersPresetsRepository.findByUserIdAndPresetId(newPreset.getUser().getId(), newPreset.getPreset().getId());
+    public UserPresetModel updatePresetName(UserPresetModel newPreset) {
+        UserPresetModel preset = this.usersPresetsRepository.findByUserIdAndId(newPreset.getUser().getId(), newPreset.getId());
         preset.setName(newPreset.getName());
-        return this.presetsRepository.findFirstById(this.usersPresetsRepository.save(preset).getPreset().getId());
+        return this.usersPresetsRepository.save(preset);
     }
 
-//    @Override
-//    @Transactional
-//    public void deletePreset(final String id) {
-//        this.presetsRepository.deleteById(UUID.fromString(id));
-//    }
+    @Override
+    @Transactional
+    public void deleteUserPreset(final UUID userId, final String id) {
+        this.usersPresetsRepository.deleteByUserIdAndId(userId, UUID.fromString(id));
+    }
 
     @Override
     public PresetModel getPresetByPostId(final String postId) {

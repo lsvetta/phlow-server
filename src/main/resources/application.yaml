@@ -5,8 +5,8 @@ phlow:
       region: ru-central1
       bucketName: phlow
       mediaMountPoint: media
-    accessKey: vOzC25cPvYqU7taLqUIw
-    secretKey: RyW18Cx4BfMuA81xDCkVEmJjt5QNe1aknfBzCqS0
+    accessKey: YANDEX_ACCESS_KEY
+    secretKey: YANDEX_SECRET_KEY
   api:
     prefix: /api
     itemsPerPage: 9

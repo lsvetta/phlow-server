@@ -12,7 +12,7 @@ public interface PresetsService {
     public PresetModel addPreset(UserPresetModel userPresetModel);
     public List<PresetModel> getPresetsForUser(UUID userId);
     public List<UserPresetModel> getUserPresetsForUser(UUID userId);
-    public PresetModel updatePresetName(final UserPresetModel newPreset);
-    //public void deletePreset(final String id);
+    public UserPresetModel updatePresetName(final UserPresetModel newPreset);
+    public void deleteUserPreset(final UUID userId, final String id);
     public PresetModel getPresetByPostId(final String postId);
 }

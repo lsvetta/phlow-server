@@ -35,6 +35,14 @@ public class FollowingController {
         this.userModelMapper = userModelMapper;
     }
 
+    @GetMapping("/{userId}/isfollowing")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ResponseEntity<Boolean> getIsFollowing(@PathVariable final String userId,
+                                                        @ApiIgnore @AuthenticationPrincipal UserModel user) {
+        return ResponseEntity.ok(this.followingsService.getFollowings(user.getId().toString()).stream().anyMatch(u -> u.getId().toString().equals(userId)));
+    }
+
     @GetMapping("/{userId}/followers")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<UserDto>> getFollowers(@PathVariable final String userId) {

@@ -12,4 +12,6 @@ public interface UsersPresetsRepository extends CrudRepository<UserPresetModel, 
     List<UserPresetModel> findAllByUserId(UUID id);
     boolean existsByUserIdAndPresetId(UUID user, UUID preset);
     UserPresetModel findByUserIdAndPresetId(UUID user, UUID preset);
+    UserPresetModel findByUserIdAndId(UUID user, UUID presetID);
+    void deleteByUserIdAndId(UUID user, UUID id);
 }

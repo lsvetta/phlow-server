@@ -115,28 +115,28 @@ public class PresetController {
         }).collect(Collectors.toList()));
     }
 
-    @PatchMapping("/{presetId}")
+    @PatchMapping("/{userPresetId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @JsonView(View.PUBLIC.class)
-    public ResponseEntity<PresetDto> updatePreset(
-            @PathVariable(value = "presetId") final String presetId,
+    public ResponseEntity<GetUserPresetDto> updateUserPresetId(
+            @PathVariable(value = "userPresetId") final String userPresetId,
             @RequestBody final UserPresetDto userPresetDto,
             @AuthenticationPrincipal @ApiIgnore final UserModel currentUser) {
-        userPresetDto.setUser(this.userModelMapper.modelToDto(currentUser));
+
+        userPresetDto.setId(UUID.fromString(userPresetId));
         UserPresetModel preset = this.userPresetsModelMapper.dtoToModel(userPresetDto);
-        preset.setPreset(new PresetModel());
-        preset.getPreset().setId(UUID.fromString(presetId));
-        return ResponseEntity.ok(this.presetsModelMapper.modelToDto(
-                        this.presetsService.updatePresetName(preset)));
+        preset.setUser(currentUser);
+        return ResponseEntity.ok(this.getUserPresetsModelMapper.modelToDto(this.presetsService.updatePresetName(preset)));
     }
 
-//    @DeleteMapping("/{presetId}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    @PreAuthorize("hasAuthority('USER')")
-//    public ResponseEntity deletePreset(
-//            @PathVariable final String presetId) {
-//        this.presetsService.deletePreset(presetId);
-//        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
-//    }
+    @DeleteMapping("/{userPresetId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity deleteUserPreset(
+            @PathVariable final String userPresetId,
+            @AuthenticationPrincipal @ApiIgnore final UserModel currentUser) {
+        this.presetsService.deleteUserPreset(currentUser.getId(), userPresetId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
+    }
 }
